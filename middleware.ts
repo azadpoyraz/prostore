@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth';
-// auth.config'den değil, içindeki dolu olan config'in olduğu auth.ts'den çekmeli
-import { config as authConfig } from './auth'; 
+import { authConfig } from './auth.config';
 
 export const { auth: middleware } = NextAuth(authConfig);
 
