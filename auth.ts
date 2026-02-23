@@ -7,6 +7,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+/* vercel değil normal hosta geçince bunu sil */ import { authConfig } from './auth.config';
+
 export const config = {
   pages: {
     signIn: "/sign-in",
@@ -122,4 +124,5 @@ export const config = {
   },
 } satisfies NextAuthConfig;
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+//vercel dışında alttaki silinecek bu kalacak ---------  export const { handlers, auth, signIn, signOut } = NextAuth(config);
+export const { handlers, auth, signIn, signOut } = NextAuth({ ...config, ...authConfig });

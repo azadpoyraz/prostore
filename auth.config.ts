@@ -1,7 +1,7 @@
 export const authConfig = {
   providers: [],
   callbacks: {
-    authorized({ auth }: any) { 
+    authorized({ auth }: any) {
       return !!auth;
     },
   },
