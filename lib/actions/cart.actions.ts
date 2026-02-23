@@ -95,8 +95,8 @@ export const addItemToCart = async (data: z.infer<typeof cartItemSchema>) => {
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
-          items: cart.items as Prisma.JsonValue[], // Tip hatası alırsan JsonValue kullanabilirsin
-          //items: cart.items as Prisma.InputJsonValue[],
+          //items: cart.items as Prisma.JsonValue[], // Tip hatası alırsan JsonValue kullanabilirsin
+          items: cart.items as Prisma.InputJsonValue[],
           ...calcPrice(cart.items as CartItem[]),
         },
       });
@@ -161,30 +161,30 @@ export async function getMyCart() {
 export async function removeItemFromCart(productId: string) {
   try {
     // Oturum sepet kimliğini (sessionCartId) al
-    const sessionCartId = (await cookies()).get('sessionCartId')?.value;
-    if (!sessionCartId) throw new Error('Cart Session not found');
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+    if (!sessionCartId) throw new Error("Cart Session not found");
 
     // Ürünü veritabanından getir
     const product = await prisma.product.findFirst({
       where: { id: productId },
     });
-    if (!product) throw new Error('Product not found');
+    if (!product) throw new Error("Product not found");
 
     // Kullanıcının sepetini getir
     const cart = await getMyCart();
-    if (!cart) throw new Error('Cart not found');
+    if (!cart) throw new Error("Cart not found");
 
     // Ürünün sepette olup olmadığını kontrol et
     const exist = (cart.items as CartItem[]).find(
-      (x) => x.productId === productId
+      (x) => x.productId === productId,
     );
-    if (!exist) throw new Error('Item not found');
+    if (!exist) throw new Error("Item not found");
 
     // Sepette üründen sadece bir tane mi var kontrol et
     if (exist.qty === 1) {
       // Ürünü sepetten tamamen kaldır
       cart.items = (cart.items as CartItem[]).filter(
-        (x) => x.productId !== exist.productId
+        (x) => x.productId !== exist.productId,
       );
     } else {
       // Mevcut ürünün miktarını bir azalt
@@ -208,8 +208,8 @@ export async function removeItemFromCart(productId: string) {
       success: true,
       message: `${product.name} ${
         (cart.items as CartItem[]).find((x) => x.productId === productId)
-          ? 'updated in'
-          : 'removed from'
+          ? "updated in"
+          : "removed from"
       } cart successfully`,
     };
   } catch (error) {
