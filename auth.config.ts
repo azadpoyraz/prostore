@@ -1,8 +1,8 @@
 export const authConfig = {
-  providers: [],
+  providers: [], // Middleware için burası boş kalmalı
   callbacks: {
     authorized({ auth }: any) {
-      return true; 
+      return !!auth; // Giriş yapmamışsa korunan sayfalara sokmaz
     },
   },
 } as any;
