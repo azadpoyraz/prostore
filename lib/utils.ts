@@ -14,3 +14,40 @@ export function formatNumberWithDecimal(num: number): string {
   const [int, decimal] = num.toString().split('.');
   return decimal ? `${int}.${decimal.padEnd(2, '0')}` : `${int}.00`;
 }
+
+// Hataları Biçimlendir
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function formatError(error: any): string {
+  if (error.name === 'ZodError') {
+    // Zod hatalarını (doğrulama hataları) ele al
+    const fieldErrors = Object.keys(error.errors).map((field) => {
+      const message = error.errors[field].message;
+      return typeof message === 'string' ? message : JSON.stringify(message);
+    });
+
+    return fieldErrors.join('. ');
+  } else if (
+    error.name === 'PrismaClientKnownRequestError' &&
+    error.code === 'P2002'
+  ) {
+    // Prisma hatalarını (benzersiz alan hatası gibi) ele al
+    const field = error.meta?.target ? error.meta.target[0] : 'Alan';
+    return `${field.charAt(0).toUpperCase() + field.slice(1)} zaten mevcut`;
+  } else {
+    // Diğer tüm hataları ele al
+    return typeof error.message === 'string'
+      ? error.message
+      : JSON.stringify(error.message);
+  }
+}
+
+// Round to 2 decimal places
+export const round2 = (value: number | string) => {
+  if (typeof value === 'number') {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  } else if (typeof value === 'string') {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+  } else {
+    throw new Error('value is not a number nor a string');
+  }
+};
